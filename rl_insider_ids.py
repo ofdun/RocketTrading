@@ -22,7 +22,7 @@ def Get_Containers(url):
     soup = bs(all_items_page, 'html.parser')
     all_ids = []
     for i in soup.find_all(class_='priceTableContainer'):
-        with open(f'c:/Users/elik3/.Projects/RocketTrading/rl_insider_htmls/rli_{i.get("id")}.html', 'w', encoding='utf-8') as f:
+        with open(r'__pycache__/rl_insider_htmls/rli_{}.html'.format(i.get("id")), 'w', encoding='utf-8') as f:
             f.write(str(i))
         all_ids.append(i.get('id'))
     return all_ids

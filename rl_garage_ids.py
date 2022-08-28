@@ -1,11 +1,9 @@
-from tkinter import Y
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from bs4 import BeautifulSoup as bs
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import numpy as np
-import os.path
 
 
 global url
@@ -15,8 +13,8 @@ url = 'https://rocket-league.com/trading'
 def Start_Update_Message():
     global dictionary
     try:
-        dictionary = np.load('c:/Users/elik3/.Projects/RocketTrading/dictionary_saves/rlg_all_items_id.npy',allow_pickle='TRUE').item()
-        if str(input('Would You like to update the data? (Y/N):\n')).lower() == 'y':
+        dictionary = np.load(r'__pycache__/dictionary_saves/rlg_all_items_id.npy',allow_pickle='TRUE').item()
+        if str(input('Would You like to update the data? (Y/N):\n')).upper() == 'Y':
             Update_data()
     except:
         dictionary = {}
@@ -35,13 +33,13 @@ def Get_Rocket_League_Garage_htmls(url):
         EC.presence_of_element_located((By.ID, 'filterItem')))
     all_items_page = element.get_attribute('innerHTML')
     soup = bs(all_items_page, 'html.parser')
-    with open('c:/Users/elik3/.Projects/RocketTrading/rl_garage_htmls/rlg_FullPage.html', 'w', encoding='utf-8') as f:
-        f.write(str(soup))
+    with open(r'__pycache__/rl_garage_htmls/rlg_FullPage.html', 'wb') as f:
+        f.write(str.encode(str(soup)))
     for i in soup.find_all('optgroup'):
         if i.get('label') == "Categories": continue
         array_of_file_names.append(f'rlg_{i.get("label").replace(" ", "_")}.html')
-        with open(f'c:/Users/elik3/.Projects/RocketTrading/rl_garage_htmls/rlg_{i.get("label").replace(" ", "_")}.html', 'w', encoding='utf-8') as f:
-            f.write(str(i))
+        with open(r'__pycache__/rl_garage_htmls/rlg_{}.html'.format(i.get("label").replace(" ", "_")), 'wb') as f:
+            f.write(str.encode(str(i)))
     return 'Rocket League Garage categories updated successfully'
 
 
@@ -54,14 +52,12 @@ def Update_data():
 
 def Get_item_ids():
     for i in range(len(array_of_file_names)):
-        with open(f'c:/Users/elik3/.Projects/RocketTrading/rl_garage_htmls/{array_of_file_names[i]}', 'r') as html_group_file:
+        with open(r'__pycache__/rl_garage_htmls/{}'.format(array_of_file_names[i]), 'rb') as html_group_file:
             soup = bs(html_group_file, 'html.parser')
             for i in soup.find_all('option'):
                 if i.get('value') == '341':
                     dictionary['341'] = 'Piñata'
                     continue
                 dictionary[i.get('value')] = i.text.replace('\n','')[:-1]
-    np.save('c:/Users/elik3/.Projects/RocketTrading/dictionary_saves/rlg_all_items_id.npy', dictionary) 
+    np.save(r'__pycache__/dictionary_saves/rlg_all_items_id.npy', dictionary) 
     return 'Rocket League Garage item ids updated successfully'
-
-print( Start_Update_Message() )
